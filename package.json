@@ -1,0 +1,25 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "node_js workspace",
+  "main": "main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KIMHUISEUNG/node_js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KIMHUISEUNG/node_js/issues"
+  },
+  "homepage": "https://github.com/KIMHUISEUNG/node_js#readme",
+  "dependencies": {
+    "sanitize-html": "^2.4.0"
+  }
+}

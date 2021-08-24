@@ -69,23 +69,23 @@ var app = http.createServer(function(request, response) {
         });
       }
     } else if(pathname === '/create'){
-      fs.readdir('./data', function(error, filelist){
-        var title ='Web - create';
-        var list = templateList(filelist);
-        var template = templateHTML(title, list, `
-                <form action="http://localhost:3000/create_process" method="post">
-                    <p><input type="text" name="title" placeholder="title"></p>
-                    <p>
-                        <textarea name="description" placeholder="description"></textarea>
-                    </p>
-                    <p>
-                        <input type="submit">
-                    </p>
-                </form>
-            `,'');
-        response.writeHead(200);
-        response.end(template);
-      });
+        fs.readdir('./data', function(error, filelist){
+          var title ='Web - create';
+          var list = templateList(filelist);
+          var template = templateHTML(title, list, `
+                  <form action="/create_process" method="post">
+                      <p><input type="text" name="title" placeholder="title"></p>
+                      <p>
+                          <textarea name="description" placeholder="description"></textarea>
+                      </p>
+                      <p>
+                          <input type="submit">
+                      </p>
+                  </form>
+              `,'');
+          response.writeHead(200);
+          response.end(template);
+        });
     } else if(pathname === '/create_process') {
         var body = '';
         request.on('data', function(data) {
@@ -99,6 +99,47 @@ var app = http.createServer(function(request, response) {
                 response.writeHead(302, {Location: `/?id=${title}`}); //파일 위치변경 302는 지금 이순간에만 바뀐다는걸 알려줌.
                 response.end();
             });
+        });
+    } else if(pathname === '/update') {
+        fs.readdir('./data', function(error, filelist) {
+            fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description) {
+                var title = queryData.id;
+                var list = templateList(filelist);
+                var template = templateHTML(title, list,
+                    `
+                    <form action="/update_process" method="post">
+                        <input type="hidden" name="id" value="${title}">
+                        <p><input type="text" name="title" placeholder="title" value="${title}"></p>
+                        <p>
+                            <textarea name="description" placeholder="description">${description}</textarea>
+                        </p>
+                        <p>
+                            <input type="submit">
+                        </p>
+                    </form>
+                    `,
+                    `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`
+                );
+                response.writeHead(200);
+                response.end(template);
+            });
+        });
+    } else if(pathname === '/update_process'){
+        var body = '';
+        request.on('data', function(data) {
+            body = body + data;
+        });
+        request.on('end', function() {
+            var post = qs.parse(body);
+            var id = post.id;
+            var title = post.title; //post로 받은 data에 접근하여 값을 받아옴.
+            var description = post.description;
+            console.log(post);
+            /*
+            fs.writeFile(`data/${title}`, description, 'utf8', function(err) {
+                response.writeHead(302, {Location: `/?id=${title}`}); //파일 위치변경 302는 지금 이순간에만 바뀐다는걸 알려줌.
+                response.end();
+            });*/
         });
     } else {
       response.writeHead(404);

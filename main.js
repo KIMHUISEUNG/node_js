@@ -32,4 +32,4 @@ var app = http.createServer(function(request, response) {
       response.end('Not Found');
     }
 });
-app.listen(8080); //port 번호 3000을 listen함.
+app.listen(8080); //port 번호 8080을 listen함.

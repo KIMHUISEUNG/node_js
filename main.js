@@ -3,19 +3,8 @@ var fs = require('fs');
 var url = require('url');
 var qs = require('querystring');
 var template = require('./lib/template.js');
-var path = require('path');
-const sanitizeHtml = require('sanitize-html');
-var mysql = require('mysql');
-
-var db = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  port     : 3307,
-  password : '111111',
-  database : 'opentutorials'
-});
-
-db.connect();
+var db = require('./lib/db');
+const topic= require('./lib/topic.js');
 
 var app = http.createServer(function(request, response) {
     var _url = request.url;
@@ -24,17 +13,7 @@ var app = http.createServer(function(request, response) {
 
     if (pathname === '/') { //홈
       if (queryData.id === undefined) {
-        db.query(`SELECT * FROM topic`, function(error, topics) { //리스트 표출
-          var title = 'Welcome';
-          var description = 'Hello, Node.js';
-          var list = template.List(topics);
-          var html = template.HTML(title, list,
-              `<h2>${title}</h2>${description}`,
-              `<a href="/create">create</a>`
-          );
-          response.writeHead(200);
-          response.end(html);
-        });
+        topic.home(request, response);
       } else {
         db.query(`SELECT * FROM topic`, function(error, topics) {
           if(error){throw error;}

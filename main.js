@@ -20,7 +20,7 @@ var app = http.createServer(function(request, response) {
     } else if(pathname === '/create'){
         topic.create(request, response);
     } else if(pathname === '/create_process') {
-        topic.create_process(requset, response);
+        topic.create_process(request, response);
     } else if(pathname === '/update') {
         topic.update(request, response);
     } else if(pathname === '/update_process'){

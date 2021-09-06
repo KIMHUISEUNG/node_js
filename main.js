@@ -15,7 +15,7 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
 */
-
+/*
 app.get('/', function(request, response) {
     fs.readdir('./data', function(error, filelist) {
         var title = 'Welcome';
@@ -27,7 +27,20 @@ app.get('/', function(request, response) {
         );
         response.send(html);
     });
+});*/
+app.get('/', function(req, res) {
+  fs.readdir('./data', function(error, filelist) {
+      var title = 'Welcome';
+      var description = 'Hello, Node.js';
+      var list = template.List(filelist);
+      var html = template.HTML(title, list,
+          `<h2>${title}</h2>${description}`,
+          `<a href="/create">create</a>`
+      );
+      response.send(html);
+  });
 });
+
 app.get('/page/:pageId', function(request, response) {
     fs.readdir('./data', function(error, filelist) {
         var filteredId = path.parse(request.params.pageId).base;
@@ -41,7 +54,7 @@ app.get('/page/:pageId', function(request, response) {
             var html = template.HTML(sanitizedTitle, list,
                 `<h2>${sanitizedTitle}</h2>${sanitizedDescription}`,
                 ` <a href="/create">create</a>
-                    <a href="/update?id=${sanitizedTitle}">update</a>
+                    <a href="/update/${sanitizedTitle}">update</a>
                     <form action="delete_process" method="post">
                         <input type="hidden" name="id" value="${sanitizedTitle}">
                         <input type="submit" value="delete">
@@ -84,6 +97,32 @@ app.post('/create_process', function(request, response) {
         });
     });
 });
+
+app.get('/update/:pageId', function(request, response) {
+  fs.readdir('./data', function(error, filelist) {
+    var fileteredId = path.parse(request.params.pageId).base;
+      fs.readFile(`data/${fileteredId}`, 'utf8', function(err, description) {
+          var title = request.params.pageId;
+          var list = template.List(filelist);
+          var html = template.HTML(title, list,
+              `
+              <form action="/update_process" method="post">
+                  <input type="hidden" name="id" value="${title}">
+                  <p><input type="text" name="title" placeholder="title" value="${title}"></p>
+                  <p>
+                      <textarea name="description" placeholder="description">${description}</textarea>
+                  </p>
+                  <p>
+                      <input type="submit">
+                  </p>
+              </form>
+              `,
+              `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`
+          );
+          response.send(html);
+      });
+  });
+})
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
